@@ -28,8 +28,8 @@ sub = 0
 for pc in range(1, len(rom) * 3):
     p = "."
 
-    sprint = m['x'] + 1
-    if pc % 40 in [sprint -1, sprint, sprint +1]:
+    sprite = m['x'] + 1
+    if pc % 40 in [sprite -1, sprite, sprite +1]:
         p = "#"
 
     print(p, end = "")
