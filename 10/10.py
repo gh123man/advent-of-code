@@ -25,9 +25,7 @@ total = 0
 m = defaultdict(lambda:1)
 fp = 0
 sub = 0
-for pc in range(len(rom) * 3):
-    
-    pc += 1
+for pc in range(1, len(rom) * 3):
     p = "."
 
     sprint = m['x'] + 1
