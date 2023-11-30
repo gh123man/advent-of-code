@@ -3,7 +3,7 @@ f = open('1.txt', 'r')
 
 top = [0, 0, 0]
 curr = 0
-for line in f.read().splitlines() :
+for line in f.read().splitlines():
     if line.isnumeric():
         curr += int(line)
         continue
