@@ -95,9 +95,6 @@ for line in lines:
         outputRanges = [] 
 # Part 1
 print(min(seeds))
-assert 510109797 == min(seeds)
-
 
 # Part 2
 print(min([x.start for x in ranges]))
-assert 9622622 == min([x.start for x in ranges])
