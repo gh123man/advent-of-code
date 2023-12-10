@@ -22,10 +22,10 @@ def processSeed(seed):
 def makeOverlaps(input, output, mapRange):
     out = []
     diff = output.start - mapRange.start
+
     # no overlap left - no transform or overlap
     # |-----|
     #          |----|
-
     if input.start < output.start and input.stop < output.start:
         return [input], []
 
@@ -59,8 +59,6 @@ def makeOverlaps(input, output, mapRange):
     if input.start <= output.stop and input.stop > output.stop:
         return [range(output.stop, input.stop)], [range(input.start - diff, output.stop - diff)]
 
-    return out
-
 
 def processRanges(ranges):
     out = []
@@ -85,7 +83,7 @@ for line in lines:
         dest, source, length = (int(x) for x in line.split())
         inputRanges.append(range(source, source + length))
         outputRanges.append(range(dest, dest + length))
-        
+
     elif len(inputRanges) > 0:
         # Part 1
         seeds = [processSeed(seed) for seed in seeds]
