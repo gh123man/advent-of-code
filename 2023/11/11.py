@@ -34,15 +34,12 @@ for y in range(len(board[0])):
         colsAdded += 1
 
 sum = 0
-pair = 0
 seen = set()
 for a in galaxies:
     for b in galaxies:
         key = tuple(sorted([a, b]))
         if a != b and key not in seen:
-            pair += 1
-            res = abs(a[0] - b[0]) + abs(a[1] - b[1])
-            sum += res 
+            sum += abs(a[0] - b[0]) + abs(a[1] - b[1])
             seen.add(key)
 
 print(sum)
