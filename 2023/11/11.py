@@ -33,11 +33,6 @@ for y in range(len(board[0])):
     if dot == len(board):
         colsAdded += 1
 
-for x, line in enumerate(board):
-    for y, c in enumerate(line):
-        if c == "#":
-            galaxies.append((x, y))
-
 sum = 0
 pair = 0
 seen = set()
