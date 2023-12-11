@@ -12,11 +12,8 @@ leftDirs  = "L F "
 redirects = [upDirs, rightDirs, downDirs, leftDirs]
 directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
+# Create another board 3x the size
 pathBoard = [["."] * 3 * len(board[0]) for _ in range(len(board) * 3)]
-
-def pb(b):
-    for r in b:
-        print("".join(r))
 
 def neighbors(x, y, board):
     tiles = []
@@ -72,37 +69,32 @@ while True:
 
 # Part 1
 print(int(moves / 2))
-assert 6867 == int(moves / 2)
 
+# Flood fill (BFS)
 def color(x, y, c):
     q = [(x, y)]
-    count = 0
     while q:
         p = q.pop()
-        x = p[0]
-        y = p[1]
-
+        x, y = p[0], p[1]
         pathBoard[x][y] = c
-        count += 1
 
         n, pos = neighbors(x, y, pathBoard)
         for n, p in zip(n, pos):
             if n == "." and p != None:
                 q.append(p)
-    return count
         
-
+# Add an extra line at the top so (0, 0) is always empty
 pathBoard.insert(0, ["."] * 3 * len(board[0]))
+# Flood fill the board to mark non-contained spaces
 color(0, 0, "O")
 pathBoard = pathBoard[1:]
 
+# Reduce the board size by 1/3 and count remaining space
 inside = 0
 for x in range(0, len(pathBoard), 3):
-    row = []
     for y in range(0, len(pathBoard[x]), 3):
         if pathBoard[x][y] == ".":
             inside += 1
 
 print(inside)
-assert 595 == inside
 
