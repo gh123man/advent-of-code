@@ -1,7 +1,6 @@
 #!/opt/homebrew/bin/python3
 from functools import cache
 
-
 f = open('12.txt', 'r')
 lines = f.read().splitlines()
 
@@ -21,33 +20,25 @@ def dropSpring(springs):
 
 @cache
 def solveRec(input, springs):
-    if len(input) == 0 and len(springs) == 0:
-        return 0
-    if len(input) == 0 and springs == "0":
-        return 1
     if len(input) == 0:
+        if springs == "0":
+            return 1
         return 0
-    
 
     combos = 0
     c = input[0]
     input = input[1:]
     ts = topSpring(springs)
 
-    if c == "." and ts == 0:
+    if (c == "." or c == "?") and ts == 0:
         combos += solveRec(input, dropSpring(springs))
         combos += solveRec(input, springs)
-
 
     if c == "#" and ts != 0:
         combos += solveRec(input, dropSpring(springs))
 
-    if c == "?":
-        if ts == 0:
-            combos += solveRec(input, dropSpring(springs))
-            combos += solveRec(input, springs)
-        else:
-            combos += solveRec(input, dropSpring(springs))
+    if c == "?" and ts != 0:
+        combos += solveRec(input, dropSpring(springs))
 
     return combos
 
