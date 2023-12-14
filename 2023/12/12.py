@@ -1,80 +1,65 @@
 #!/opt/homebrew/bin/python3
-import itertools
 from functools import cache
 
 
 f = open('12.txt', 'r')
 lines = f.read().splitlines()
 
-def tokenize(problems):
-    tokens = []
-    last = ""
-    buf = ""
-    for c in problems:
-        if c != last and buf != "":
-            tokens.append(buf)
-            buf = ""
-        buf += c
-        last = c
-    if buf != "":
-        tokens.append(buf)
-    return tokens
+def topSpring(springs):
+    if springs == "":
+        return 0
+    return [int(x) for x in springs.split(",")][0]
 
-def isSpring(token):
-    return token[0] == "#"
+def dropSpring(springs):
+    if springs == "":
+        return ""
+    sprs = [int(x) for x in springs.split(",")]
+    if sprs[0] == 0:
+        return ",".join([str(s) for s in sprs[1:]])
+    sprs[0] -= 1
+    return ",".join([str(s) for s in sprs])
 
-def springs(tokens):
-    return [t for t in tokens if t[0] == "#"]
+@cache
+def solveRec(input, springs):
+    if len(input) == 0 and len(springs) == 0:
+        return 0
+    if len(input) == 0 and springs == "0":
+        return 1
+    if len(input) == 0:
+        return 0
+    
 
-def isValid(problem, constraints):
-    tokens = tokenize(problem)
-    for token in tokens:
-        if isSpring(token):
-            if len(constraints) == 0: 
-                return False
-            if len(token) != constraints[0]:
-                return False
-            else:
-                if len(constraints) > 0:
-                    constraints.pop(0)
-                else:
-                    return False
-    if len(constraints) > 0:
-        return False
-    return True
+    combos = 0
+    c = input[0]
+    input = input[1:]
+    ts = topSpring(springs)
 
-def permute(token):
-    return ["".join(p) for p in itertools.product(["#", "."], repeat=len(token))]
-
-def expand(permutations):
-    if len(permutations) == 1:
-        return permutations[0]
-    out = []
-    for p in permutations[0]:
-        for ex in expand(permutations[1:]):
-            out.append(p + ex)
-    return out
+    if c == "." and ts == 0:
+        combos += solveRec(input, dropSpring(springs))
+        combos += solveRec(input, springs)
 
 
-def exp1(t):
-    k = []
-    for a in t:
-        if a[0] == "?":
-            k.append(permute(a))
+    if c == "#" and ts != 0:
+        combos += solveRec(input, dropSpring(springs))
+
+    if c == "?":
+        if ts == 0:
+            combos += solveRec(input, dropSpring(springs))
+            combos += solveRec(input, springs)
         else:
-            k.append([a])
-    return k
+            combos += solveRec(input, dropSpring(springs))
+
+    return combos
+
+def solve(input, springs):
+    return solveRec("." + input, "0," + springs)
 
 sum = 0
 for line in lines:
-    problem, constraint = line.split()
-    constraint = [int(x) for x in constraint.split(",")]
+    prob, const = line.split()
+    prob = "?".join([prob] * 5) # part 2
+    const = ",".join([const] * 5) # part 2
+    sum += solve(prob, const)
 
-    problem = exp1(tokenize(problem))
 
-    for v in expand(problem):
-        if isValid(v, constraint.copy()):
-            sum += 1
 print(sum)
-
-assert 7260 == sum
