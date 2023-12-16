@@ -11,15 +11,11 @@ leftDirs  = "\\ / "
 redirects = [upDirs, rightDirs, downDirs, leftDirs]
 directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
-def solve(start, dir):
-    drawBoard = []
-    for line in board:
-        drawBoard.append(list(line))
-
-    nextPos = start
-    direction = dir
-    q = [(nextPos, direction)] # Push moves onto queue
+def solve(nextPos, direction):
+    drawBoard = [list(line) for line in board]
+    q = [(nextPos, direction)] 
     term = set()
+
     while q:
         nextPos = (nextPos[0] + directions[direction][0], nextPos[1] + directions[direction][1])
 
@@ -46,33 +42,26 @@ def solve(start, dir):
     return drawBoard
 
 def score(drawBoard):
-    sum = 0
+    s = 0
     for l in drawBoard:
-        for x in l:
-            if x == "#":
-                sum += 1
-    return sum
+        s += sum([1 for x in l if x == "#"])
+    return s
 
 # Part 1
 drawBoard = solve((0, -1), 1)
-s = score(drawBoard)
-print(s)
+print(score(drawBoard))
 
 # Part 2
 s = 0
 for y in range(len(board[0])):
     b = solve((-1, y), 2)
     s = max(score(b), s)
-
-for y in range(len(board[0])):
     b = solve((len(board), y), 0)
     s = max(score(b), s)
 
 for x in range(len(board)):
     b = solve((x, -1), 1)
     s = max(score(b), s)
-
-for x in range(len(board)):
     b = solve((x, len(board[0])), 3)
     s = max(score(b), s)
 
