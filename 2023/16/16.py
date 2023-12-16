@@ -21,9 +21,7 @@ def solve(nextPos, direction):
 
         if nextPos in term or nextPos[0] < 0 or nextPos[0] >= len(board) or nextPos[1] < 0 or nextPos[1] >= len(board[0]):
             nextPos, direction = q.pop(0)
-
-            if nextPos not in term:
-                term.add(nextPos)
+            term.add(nextPos)
             continue
         drawBoard[nextPos[0]][nextPos[1]] = "#"
         next = board[nextPos[0]][nextPos[1]]
@@ -54,15 +52,11 @@ print(score(drawBoard))
 # Part 2
 s = 0
 for y in range(len(board[0])):
-    b = solve((-1, y), 2)
-    s = max(score(b), s)
-    b = solve((len(board), y), 0)
-    s = max(score(b), s)
+    s = max(score(solve((-1, y), 2)), s)
+    s = max(score(solve((len(board), y), 0)), s)
 
 for x in range(len(board)):
-    b = solve((x, -1), 1)
-    s = max(score(b), s)
-    b = solve((x, len(board[0])), 3)
-    s = max(score(b), s)
+    s = max(score(solve((x, -1), 1)), s)
+    s = max(score(solve((x, len(board[0])), 3)), s)
 
 print(s)
