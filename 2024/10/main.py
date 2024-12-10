@@ -30,20 +30,12 @@ def neighbors(pos):
         if cell != None and cell == v + 1:
             yield newPos
 
-def getExits(pos):
+def explore(pos, new, append):
     if getCell(grid, pos) == 9:
-        return set([pos])
-    res = set()
+        return new(pos)
+    res = new()
     for n in neighbors(pos):
-        res.update(getExits(n))
-    return res
-
-def getPaths(pos):
-    if getCell(grid, pos) == 9:
-        return [pos]
-    res = []
-    for n in neighbors(pos):
-        res += getPaths(n)
+        append(res, explore(n, new, append))
     return res
 
 score = 0
@@ -51,8 +43,8 @@ paths = 0
 for y, row in enumerate(grid):
     for x, v in enumerate(row):
         if v == '0':
-            score += len(getExits((y, x)))
-            paths += len(getPaths((y, x)))
+            score += len(explore((y, x), lambda *v: set(v), lambda x, y: x.update(y)))
+            paths += len(explore((y, x), lambda *v: list(v), lambda x, y: x.extend(y)))
 
 print(score)
 print(paths)
