@@ -1,8 +1,5 @@
 #!/opt/homebrew/bin/python3 
-from functools import cache
 import re
-import os
-
 
 f = open('input.txt', 'r')
 lines = f.read().splitlines()
@@ -15,9 +12,6 @@ class Vec:
 
     def add(self, vec):
         return Vec(self.x + vec.x, self.y + vec.y)
-
-    def mul(self, vec):
-        return Vec(self.x * vec.x, self.y * vec.y)
 
     def __str__(self):
         return f"({self.x}, {self.y})"
@@ -40,12 +34,6 @@ class Quad:
     def contains(self, point):
         return point.x >= self.point.x and point.x < self.size.x and point.y >= self.point.y and point.y < self.size.y
     
-    def add(self, vec):
-        return Quad(self.point.add(vec), self.size.add(vec))
-
-    def mul(self, vec):
-        return Quad(self.point.mul(vec), self.size.mul(vec))
-
     def __str__(self):
         return f"({self.point}, {self.size})"
 
@@ -64,17 +52,12 @@ def draw(drones):
         print()
 
 drones = []
-# board = Vec(11, 7)
 board = Vec(101, 103)
 
 for line in lines:
     match = pattern.search(line)
     px, py, dx, dy = (int(match.group(1)), int(match.group(2)), int(match.group(3)), int(match.group(4)))
     drones.append(Drone(board, Vec(px, py), Vec(dx, dy)))
-
-for i in range(0, 100):
-    for d in drones:
-        d.move()
 
 dx = Vec(board.x // 2, 0)
 dy = Vec(0, board.y // 2)
@@ -88,6 +71,13 @@ q3 = Quad(dy.add(y1), q1.size.add(dy).add(y1))
 q4 = Quad(dy.add(dx).add(x1).add(y1), origin.add(dx).add(dy).add(dx).add(dy).add(x1).add(y1))
 
 quads = [q1, q2, q3, q4]
+i = 0
+
+# Part 1
+for i in range(0, 100):
+    for d in drones:
+        d.move()
+    i += 1
 
 total = 1
 for q in quads:
@@ -98,13 +88,12 @@ for q in quads:
     total *= sum
 print(total)
 
-a = 7892
-i = 100 # to account for the original 100 moves
+# part 2
+a = 7892 # I found it!
 while True:
-    # os.system("clear")
     for d in drones:
         d.move()
-    i+= 1
+    i += 1
     if i == a:
         draw(drones)
         break
