@@ -13,9 +13,6 @@ class Vec:
     def add(self, vec):
         return Vec(self.x + vec.x, self.y + vec.y)
 
-    def __str__(self):
-        return f"({self.x}, {self.y})"
-
 class Drone:
     def __init__(self, board, pos, direction):
         self.board = board
@@ -34,9 +31,6 @@ class Quad:
     def contains(self, point):
         return point.x >= self.point.x and point.x < self.size.x and point.y >= self.point.y and point.y < self.size.y
     
-    def __str__(self):
-        return f"({self.point}, {self.size})"
-
 def draw(drones):
     board = drones[0].board
     for y in range(board.y):
