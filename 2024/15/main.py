@@ -37,12 +37,13 @@ def move(board, pos, next):
 
 def tryMove(board, pos, d):
     next = (pos[0] + d[0], pos[1] + d[1])
-    if getCell(board, next) == "#":
+    cell = getCell(board, next)
+    if cell == "#":
         return pos 
-    if getCell(board, next) == ".":
+    if cell == ".":
         move(board, pos, next)
         return next 
-    if getCell(board, next) == "O":
+    if cell == "O":
         nn = tryMove(board, next, d)
         if nn != None and nn != next:
             move(board, pos, next)
@@ -54,7 +55,8 @@ def explore(board, pos):
         direction = directions[move]
         pos = tryMove(board, pos, direction)
 
-def tryUpBoxMove(board, nextl, nextr, charDir):
+# Attempt the move - Accept the new board if both branches are valid. Else, throw away the copy. 
+def tryUpDownBoxMove(board, nextl, nextr, charDir):
     cpy = deepcopy(board)
     nl = tryMove2(cpy, nextl, charDir)
     nr = tryMove2(cpy, nextr, charDir)
@@ -66,29 +68,26 @@ def tryUpBoxMove(board, nextl, nextr, charDir):
 def tryMove2(board, pos, charDir):
     d = directions[charDir]
     next = (pos[0] + d[0], pos[1] + d[1])
-    if getCell(board, next) == "#":
+    cell = getCell(board, next)
+    if cell == "#":
         return pos 
-    if getCell(board, next) == ".":
+    if cell == ".":
         move(board, pos, next)
         return next 
-    if (charDir == ">" or charDir == "<") and (getCell(board, next) == "[" or getCell(board, next) == "]"):
+    if (charDir == ">" or charDir == "<") and (cell== "[" or cell == "]"):
         nn = tryMove2(board, next, charDir)
         if nn != None and nn != next:
             move(board, pos, next)
             return next
         return pos
 
-    if (charDir == "^" or charDir == "v") and getCell(board, next) == "[":
+    if (charDir == "^" or charDir == "v") and (cell == "[" or cell == "]"):
         nextr = (next[0], next[1] + 1)
-        if tryUpBoxMove(board, next, nextr, charDir):
-            move(board, pos, next)
-            return next
-        return pos
-
-    
-    if (charDir == "^" or charDir == "v") and getCell(board, next) == "]":
-        nextl = (next[0], next[1] - 1)
-        if tryUpBoxMove(board, nextl, next, charDir):
+        nextl = next
+        if cell == "]":
+            nextr = next
+            nextl = (next[0], next[1] - 1)
+        if tryUpDownBoxMove(board, nextl, nextr, charDir):
             move(board, pos, next)
             return next
         return pos
@@ -111,7 +110,6 @@ def findStart(grid):
         for x, v in enumerate(row):
             if v == "@":
                 return (y, x)
-            
 
 def enlarge(grid):
     newGrid = []
