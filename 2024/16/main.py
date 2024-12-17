@@ -1,5 +1,9 @@
 from lib import *
 import heapq
+from collections import deque
+import sys
+
+sys.setrecursionlimit(1500000) 
 
 lines = lines("input.txt")
 
@@ -49,45 +53,63 @@ def bfs(grid, start, end, startDirection):
     
     return bestScore
 
-
-def bfs2(grid, start, end, startDirection):
-    queue = [(score(0, 0), start, startDirection, 0, 0, set())]  
-    bestPaths = []
-    bestScore = None
+# Thanks chatGPT
+def dijkstra(grid, start, end, startDirection):
     visited = set()
+    dist = {}
+    prev_states = {} 
     
-    while queue:
-        currentScore, pos, direction, steps, turns, posSet = heapq.heappop(queue)
+    start_state = (start, startDirection)
+    dist[start_state] = 0
+    pq = [(0, start, startDirection, 0, 0)]
+
+    while pq:
+        currentScore, pos, direction, steps, turns = heapq.heappop(pq)
+        state = (pos, direction)
+        if state in visited:
+            continue
+        visited.add(state)
         
         if pos == end:
-            if bestScore is None or steps < bestScore:
-                bestScore = steps
-                bestPaths = [posSet]
-            elif steps == bestScore:
-                bestPaths.append(posSet)
             continue
-        
-        if (pos, direction) in visited:
-            continue
-        visited.add((pos, direction))
-        
+
         for nextPos, val, d in grid.neighbors(pos, cardinal_directions):
             if val is None or val == "#":
                 continue
-            newTurns = turns + count_turns(direction, d)
-            newSteps = steps + 1
-            newScore = score(newSteps, newTurns)
-            posSet.add(nextPos)
-            
-            if bestScore is not None and newScore >= bestScore:
-                continue
-            
-            heapq.heappush(queue, (newScore, nextPos, d, newSteps, newTurns, posSet))
-    
-    print(len(bestPaths))
-    return bestScore
+            new_turns = turns + count_turns(direction, d)
+            new_steps = steps + 1
+            new_score = score(new_steps, new_turns)
+            next_state = (nextPos, d)
 
-# print(bfs(grid, start, end, startDirection))
-print(bfs2(grid, start, end, startDirection))
+            if next_state not in dist or new_score < dist[next_state]:
+                dist[next_state] = new_score
+                prev_states[next_state] = [state]
+                heapq.heappush(pq, (new_score, nextPos, d, new_steps, new_turns))
+            elif new_score == dist[next_state]:
+                prev_states[next_state].append(state)
 
+    end_states = [s for s in dist if s[0] == end]
+
+    if not end_states:
+        return set()
+
+    min_end_cost = min(dist[s] for s in end_states)
+    optimal_end_states = [s for s in end_states if dist[s] == min_end_cost]
+
+    to_visit = optimal_end_states[:]
+    all_optimal_positions = set(s[0] for s in to_visit)
+
+    while to_visit:
+        cur = to_visit.pop()
+        if cur in prev_states:
+            for p in prev_states[cur]:
+                if p[0] not in all_optimal_positions:
+                    all_optimal_positions.add(p[0])
+                to_visit.append(p)
+
+    return all_optimal_positions
+
+print(bfs(grid, start, end, startDirection))
+poss = dijkstra(grid, start, end, startDirection)
+print(len(poss))
 

@@ -23,8 +23,12 @@ class Grid:
         return deepcopy(self)
     
     def set(self, position, value):
-        y, x = position
-        self.board[y][x] = value
+        if isinstance(position, set) or isinstance(position, list):
+            for y, x in position:
+                self.board[y][x] = value
+        else:
+            y, x = position
+            self.board[y][x] = value
         return self
     
     def get(self, position):
