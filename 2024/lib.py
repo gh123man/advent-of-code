@@ -9,10 +9,14 @@ def lines(file):
     return f.read().splitlines()
 
 class Grid:
-    def __init__(self, lines=None):
+    def __init__(self, lines=None, width=None, height=None, default=None):
         self.board = []
         if lines:
             self.parse(lines)
+        if width and height:
+            for _ in range(height):
+                self.board.append([default for _ in range(width)])
+    
 
     def parse(self, lines):
         for line in lines:
