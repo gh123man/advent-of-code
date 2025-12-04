@@ -8,7 +8,7 @@ grid = Grid(f.read().splitlines())
 def countUnderFour(y, x):
     if grid.get((y, x)) != "@":
         return False
-    return len([x for _, x, _ in grid.neighbors((y, x), all_edges) if x != None and x != "."]) < 4
+    return len([v for _, v, _ in grid.neighbors((y, x), all_edges) if v != None and v != "."]) < 4
 
 part1 = 0
 for y, x in grid.enumerate():
