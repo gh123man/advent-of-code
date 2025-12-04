@@ -2,6 +2,7 @@ from copy import copy, deepcopy
 
 # up, right, down, left
 cardinal_directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+all_edges = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 cardinal_directions_map = {"N": (-1, 0), "E": (0, 1), "S": (1, 0), "W": (0, -1)}
 
 def lines(file):
@@ -45,6 +46,11 @@ class Grid:
         for d in directions:
             next = (pos[0] + d[0], pos[1] + d[1])
             yield (next, self.get(next), d)
+
+    def enumerate(self):
+        for y, row in enumerate(self.board):
+            for x, cell in enumerate(row):
+                yield (y, x)
 
     def find(self, v):
         for y, row in enumerate(self.board):
