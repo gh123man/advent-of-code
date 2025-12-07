@@ -9,7 +9,7 @@
             "console": "integratedTerminal",
             "cwd": "${fileDirname}",
             "env": {
-                "PYTHONPATH": "${workspaceFolder}/2024"
+                "PYTHONPATH": "${workspaceFolder}/2025"
             }
         }
     ]
