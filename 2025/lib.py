@@ -61,3 +61,7 @@ class Grid:
 
     def __str__(self):
         return '\n'.join([''.join([str(v) for v in row]) for row in self.board])
+
+def transpose(m):
+    m_reversed = m[::-1]
+    return [[m_reversed[j][i] for j in range(len(m_reversed))] for i in range(len(m_reversed[0]))]
